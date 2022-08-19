@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import '../page2/contacts_page.dart';
+
+class DialPage extends StatefulWidget {
+  const DialPage({Key? key}) : super(key: key);
+
+  @override
+  State<DialPage> createState() => _DialPageState();
+}
+
+class _DialPageState extends State<DialPage> {
+  Map<String, String> numbersRow1 = {
+    '1': ' ',
+    '2': 'ABC',
+    '3': 'DEF',
+  };
+  Map<String, String> numbersRow2 = {
+    '4': 'GHI',
+    '5': 'JKL',
+    '6': 'MNO',
+  };
+  Map<String, String> numbersRow3 = {
+    '7': 'PQRS',
+    '8': 'TUV',
+    '9': 'WXYZ',
+  };
+  Map<String, String> numbersRow4 = {
+    '*': ' ',
+    '0': '+',
+    '#': ' ',
+  };
+
+  String numbersData = '';
+  List<String> numbers = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            numbersData,
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          TextButton(
+            onPressed: () {
+              numbers.add(numbersData);
+              numbersData = numbersData.substring(numbersData.length);
+              setState(() {});
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.add,
+                  color: Colors.green,
+                ),
+                Text(
+                  '  Add to contacts',
+                  style: TextStyle(color: Colors.green),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 45),
+            child: Column(
+              children: [
+                myChildrenColumn(numbersRow1),
+                myChildrenColumn(numbersRow2),
+                myChildrenColumn(numbersRow3),
+                myChildrenColumn(numbersRow4),
+              ],
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 35, right: 35, bottom: 65, top: 35),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContactsPage(
+                                  numbers: numbers,
+                                )),
+                      );
+                    },
+                    icon: const Icon(Icons.groups_outlined)),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.green.shade300,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.phone),
+                    color: Colors.white,
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {
+                      numbersData =
+                          numbersData.substring(0, numbersData.length - 1);
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.backspace_outlined))
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextButton numRow({required String num, required String letters}) {
+    return TextButton(
+        onPressed: () {
+          numbersData += num;
+          setState(() {});
+        },
+        child: Column(
+          children: [
+            Text(
+              num,
+              style: const TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            Text(
+              letters,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ));
+  }
+
+  Padding myChildrenColumn(Map numbersRows) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 35, right: 35),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: numbersRows.entries
+              .map((e) => numRow(num: e.key, letters: e.value))
+              .toList()),
+    );
+  }
+}
