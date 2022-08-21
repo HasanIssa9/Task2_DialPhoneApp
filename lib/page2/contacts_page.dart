@@ -7,7 +7,7 @@ import '../page2/list_contacts.dart';
 class ContactsPage extends StatelessWidget {
   ContactsPage({Key? key, required this.numbers}) : super(key: key);
 
-  List<String> numbers;
+  Map<String,String> numbers;
 
   @override
   Widget build(BuildContext context) {

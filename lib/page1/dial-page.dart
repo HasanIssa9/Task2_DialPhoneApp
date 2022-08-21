@@ -31,7 +31,10 @@ class _DialPageState extends State<DialPage> {
   };
 
   String numbersData = '';
-  List<String> numbers = [];
+  List<String> numbers=[];
+  List<String> names=[];
+  Map<String,String> contacts = {};
+  final TextEditingController controllerName=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,26 +46,7 @@ class _DialPageState extends State<DialPage> {
             numbersData,
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
-          TextButton(
-            onPressed: () {
-              numbers.add(numbersData);
-              numbersData = numbersData.substring(numbersData.length);
-              setState(() {});
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.add,
-                  color: Colors.green,
-                ),
-                Text(
-                  '  Add to contacts',
-                  style: TextStyle(color: Colors.green),
-                ),
-              ],
-            ),
-          ),
+          AddToContacts(context),
           Container(
             padding: const EdgeInsets.only(top: 45),
             child: Column(
@@ -74,46 +58,121 @@ class _DialPageState extends State<DialPage> {
               ],
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 35, right: 35, bottom: 65, top: 35),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ContactsPage(
-                                  numbers: numbers,
-                                )),
-                      );
-                    },
-                    icon: const Icon(Icons.groups_outlined)),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.green.shade300,
-                      borderRadius: BorderRadius.circular(18)),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.phone),
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                    onPressed: () {
-                      numbersData =
-                          numbersData.substring(0, numbersData.length - 1);
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.backspace_outlined))
-              ],
-            ),
-          ),
+          BottomRowIcons(context),
         ],
       ),
     );
+  }
+
+  Padding BottomRowIcons(BuildContext context) {
+    return Padding(
+          padding:
+              const EdgeInsets.only(left: 35, right: 35, bottom: 40, top: 35),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ContactsPage(
+                                numbers: contacts,
+                              )),
+                    );
+                  },
+                  icon: const Icon(Icons.groups_outlined)),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.green.shade300,
+                    borderRadius: BorderRadius.circular(18)),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.phone),
+                  color: Colors.white,
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    numbersData =
+                        numbersData.substring(0, numbersData.length - 1);
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.backspace_outlined))
+            ],
+          ),
+        );
+  }
+
+  TextButton AddToContacts(BuildContext context) {
+    return TextButton(
+          onPressed: () {
+            final alertAddName = AlertDialog(
+              title: const Text('Add name '),
+              content: SizedBox(
+                height: 120,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Divider(
+                      color: Colors.black,
+                      height: 5,
+                    ),
+                    TextField(
+                      controller: controllerName,
+                      autofocus: true,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context,controllerName);
+                        numbers.add(numbersData);
+                        names.add(controllerName.text);
+                        contacts=Map.fromIterables(numbers,names);
+                        numbersData = numbersData.substring(numbersData.length);
+                        controllerName.text=controllerName.text.substring(controllerName.text.length);
+                        setState(() {});
+                      },
+                      child: SizedBox(
+                        width: 65,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: const [
+                            Text('Save'),
+                            Icon(Icons.save),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+            showDialog(
+                context: context,
+                builder: (BuildContext ctx) {
+                  return alertAddName;
+                });
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.add,
+                color: Colors.green,
+              ),
+              Text(
+                '  Add to contacts',
+                style: TextStyle(color: Colors.green),
+              ),
+            ],
+          ),
+        );
   }
 
   TextButton numRow({required String num, required String letters}) {

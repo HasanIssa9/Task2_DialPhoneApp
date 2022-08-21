@@ -5,9 +5,8 @@ class BottomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 570,
-      left: 110,
+    return Padding(
+      padding: EdgeInsets.only(top:700,left: 120,right: 120),
       child: Container(
         height: 60,
         padding: const EdgeInsets.only(left: 20, right: 20),
